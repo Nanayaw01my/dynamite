@@ -11,7 +11,8 @@
 backend:
   name: github
   repo: Nanayaw01my/dynamite
-  branch: main
+  # Must match the branch Vercel deploys — currently the repository's default.
+  branch: claude/dynamite-faith-church-site-m72ppw
   # The GitHub login is handled by the two serverless functions in /api.
   # Replace this with the church's own domain once it is connected.
   base_url: https://dynamite.vercel.app

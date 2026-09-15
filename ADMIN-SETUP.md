@@ -78,7 +78,10 @@ base_url: https://dynamite.vercel.app
 site_url: https://dynamite.vercel.app
 ```
 
-Also check that `branch:` matches the branch Vercel deploys (usually `main`).
+Also check that `branch:` matches the branch Vercel deploys. This repository's
+default branch is currently `claude/dynamite-faith-church-site-m72ppw`, and the
+config is already set to it. If the branch is ever renamed to `main`, change it
+here too or saving from the admin will fail.
 
 Save, commit, and push. Vercel redeploys automatically.
 
