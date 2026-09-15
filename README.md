@@ -90,8 +90,18 @@ show the real embedded map. The "Open in Google Maps" link works either way.
 **Add the church email** — set `"email": "info@example.org"` in `church`. The footer and
 contact section pick it up automatically.
 
-**Add the logo** — upload it in the admin, or set `"logo": "assets/img/uploads/logo.png"`
-in `church`. It appears in the header, footer and browser tab.
+**The church logo** lives in `assets/img/`, cut out of its background so it sits on
+white and on the navy footer alike:
+
+| File | Used for |
+| --- | --- |
+| `logo-mark.png` | the emblem — header, footer, and the `logo` field in `content.json` |
+| `logo-full.png` | the full lockup with the wordmark — the admin login screen, and print |
+| `og-image.png` | the preview card shown when the site is shared on WhatsApp or Facebook |
+| `favicon.png`, `apple-touch-icon.png` | browser tab and phone home screen |
+
+To swap it later, upload a new one in the admin (**Church details → Logo**) or set
+`"logo"` in `church` to the new path.
 
 **Add social media** — paste the real page URLs into `socials`. Links left empty render
 as inactive placeholders rather than pointing anywhere false.
@@ -118,7 +128,7 @@ index.html              the page (semantic HTML, SEO + Open Graph tags, JSON-LD)
 assets/content.json     ← ALL EDITABLE CONTENT LIVES HERE
 assets/css/styles.css   design system (colour tokens, components, responsive rules)
 assets/js/main.js       rendering, navigation, lightbox, form validation
-assets/img/             SVG artwork and favicon
+assets/img/             logo files, SVG artwork and favicons
 assets/img/uploads/     logos and photographs uploaded through the admin
 admin/index.html        the admin app
 admin/config.yml        what the admin lets the church edit

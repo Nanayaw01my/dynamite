@@ -27,7 +27,7 @@ public_folder: assets/img/uploads
 publish_mode: simple
 
 # site_url is also filled in automatically from the current address.
-logo_url: /assets/img/favicon.svg
+logo_url: /assets/img/logo-full.png
 
 collections:
   - name: site
