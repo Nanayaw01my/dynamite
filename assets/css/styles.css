@@ -151,21 +151,86 @@ p { margin: 0 0 1rem; }
 .nav-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
 
+/* Mobile navigation: a drawer that slides in from the side, over a dimmed page.
+   (It deliberately does not drop down from the top of the screen.) */
+.nav__head { display: none; }
+.nav-scrim {
+  /* Below the header (z-index 100), because the drawer lives inside the header's
+     stacking context and cannot paint above a scrim that sits over it. The
+     header bar itself is dimmed by .header.is-nav-open::after. */
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(13, 30, 51, .55);
+  backdrop-filter: blur(2px);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--ease), visibility .3s;
+}
+.nav-scrim.is-open { opacity: 1; visibility: visible; }
+
 @media (max-width: 960px) {
   .nav-toggle { display: inline-flex; }
   .header__cta { display: none; }
-  .nav {
-    position: fixed; inset: calc(var(--header-h) + env(safe-area-inset-top, 0px)) 0 auto 0;
-    background: #fff; border-bottom: 1px solid var(--gray-100);
-    padding: 12px 20px 26px; box-shadow: var(--shadow);
-    transform: translateY(-12px); opacity: 0; visibility: hidden;
-    transition: opacity .2s var(--ease), transform .2s var(--ease), visibility .2s;
-    max-height: calc(100vh - var(--header-h)); overflow-y: auto;
+
+  /* backdrop-filter would make the header a containing block for the fixed
+     drawer, trapping it at header height — so it is dropped at these widths. */
+  .header { backdrop-filter: none; background: #fff; }
+
+  /* Dims the header bar in step with the scrim over the rest of the page. */
+  .header.is-nav-open::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: rgba(13, 30, 51, .55);
+    animation: nav-scrim-in .3s var(--ease) both;
   }
-  .nav.is-open { transform: none; opacity: 1; visibility: visible; }
+  @keyframes nav-scrim-in { from { opacity: 0; } to { opacity: 1; } }
+
+  .nav {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 120;
+    width: min(86vw, 330px);
+    display: flex; flex-direction: column;
+    background: #fff;
+    padding:
+      calc(14px + env(safe-area-inset-top, 0px))
+      20px
+      calc(26px + env(safe-area-inset-bottom, 0px));
+    box-shadow: -20px 0 50px rgba(18, 53, 91, .18);
+    overflow-y: auto; overscroll-behavior: contain;
+    transform: translateX(100%);
+    /* visibility keeps the closed drawer out of the tab order. It flips
+       instantly on open, and only after the slide-out finishes on close —
+       transitioning it would leave the drawer hidden to focus() while open. */
+    visibility: hidden;
+    transition: transform .32s var(--ease), visibility 0s linear .32s;
+  }
+  .nav.is-open {
+    transform: none; visibility: visible;
+    transition: transform .32s var(--ease), visibility 0s linear 0s;
+  }
+
+  .nav__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding-bottom: 14px; margin-bottom: 10px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .nav__title {
+    font-size: .72rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--gold-600);
+  }
+  .nav__close {
+    width: 40px; height: 40px; flex: none; display: grid; place-items: center;
+    border: 1.5px solid var(--gray-200); border-radius: 12px;
+    background: #fff; color: var(--navy); cursor: pointer;
+    transition: border-color .18s var(--ease), color .18s var(--ease);
+  }
+  .nav__close:hover { border-color: var(--navy); }
+
   .nav__list { flex-direction: column; align-items: stretch; gap: 2px; }
-  .nav__link { padding: 14px 12px; border-radius: var(--radius-sm); font-size: 1rem; }
-  .nav__cta { display: block; margin-top: 14px; }
+  .nav__link {
+    padding: 14px 12px; border-radius: var(--radius-sm); font-size: 1.02rem;
+  }
+  .nav__link[aria-current="true"] {
+    background: var(--gold-soft); color: var(--navy);
+    box-shadow: inset 3px 0 0 var(--gold);
+  }
+  .nav__cta { display: block; margin-top: auto; padding-top: 22px; }
   .nav__cta .btn { width: 100%; }
 }
 

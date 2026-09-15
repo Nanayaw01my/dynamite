@@ -301,23 +301,65 @@
   /* ---------------- Navigation ---------------- */
   function initNav() {
     var header = $('.header'), nav = $('#primary-nav'), toggle = $('.nav-toggle');
+    var scrim = $('#nav-scrim'), close = $('.nav__close');
+
     if (toggle && nav) {
-      toggle.addEventListener('click', function () {
-        var open = nav.classList.toggle('is-open');
-        toggle.setAttribute('aria-expanded', String(open));
+      var lastFocus = null;
+
+      function openNav() {
+        lastFocus = document.activeElement;
+        nav.classList.add('is-open');
+        if (scrim) scrim.classList.add('is-open');
+        if (header) header.classList.add('is-nav-open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        // Flush the style change so the drawer is visible before focus moves
+        // into it — focus() is ignored while it is still visibility:hidden.
+        void nav.offsetWidth;
+        var first = $('.nav__close', nav) || $('a', nav);
+        if (first) first.focus();
+      }
+      function closeNav(returnFocus) {
+        nav.classList.remove('is-open');
+        if (scrim) scrim.classList.remove('is-open');
+        if (header) header.classList.remove('is-nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        if (returnFocus !== false && lastFocus) lastFocus.focus();
+      }
+      function isOpen() { return nav.classList.contains('is-open'); }
+
+      toggle.addEventListener('click', function () { isOpen() ? closeNav() : openNav(); });
+      if (close) close.addEventListener('click', function () { closeNav(); });
+      if (scrim) scrim.addEventListener('click', function () { closeNav(); });
+
+      // Tapping the dimmed header (outside the drawer) closes it too.
+      if (header) header.addEventListener('click', function (e) {
+        if (isOpen() && !e.target.closest('#primary-nav') && !e.target.closest('.nav-toggle')) closeNav();
       });
+
+      // Tapping a link closes the drawer and lets the page scroll to the section.
       nav.addEventListener('click', function (e) {
-        if (e.target.closest('a')) {
-          nav.classList.remove('is-open');
-          toggle.setAttribute('aria-expanded', 'false');
-        }
+        if (e.target.closest('a')) closeNav(false);
       });
+
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-          nav.classList.remove('is-open');
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.focus();
-        }
+        if (!isOpen()) return;
+        if (e.key === 'Escape') { closeNav(); return; }
+        if (e.key !== 'Tab') return;
+        // Keep focus inside the drawer while it is open.
+        var items = $$('a[href], button:not([disabled])', nav).filter(function (el) {
+          return el.offsetParent !== null;
+        });
+        if (!items.length) return;
+        var first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+
+      // Returning to desktop width must not leave the page scroll-locked.
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 960 && isOpen()) closeNav(false);
       });
     }
 
