@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Website Admin | Dynamite Faith Church International</title>
-<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <meta name="robots" content="noindex">
 <style>
   body { margin: 0; font-family: Inter, system-ui, sans-serif; }
@@ -60,7 +60,9 @@
   }
 
   try {
-    const response = await fetch('config.yml', { cache: 'no-cache' });
+    // Absolute path: with cleanUrls the admin is served at /admin as well as
+    // /admin/, and a relative path would resolve to /config.yml from the former.
+    const response = await fetch('/admin/config.yml', { cache: 'no-cache' });
     if (!response.ok) throw new Error('config.yml responded with ' + response.status + '.');
 
     const jsyaml = await waitFor(function () { return window.jsyaml; }, 'The settings reader');
