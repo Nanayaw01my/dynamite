@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var SITE = window.SITE || {};
+  var SITE = {};
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
@@ -289,6 +289,13 @@
     }
 
     $$('[data-year]').forEach(function (el) { el.textContent = church.copyrightYear || new Date().getFullYear(); });
+
+    // Logo and church name are content, so an uploaded logo appears everywhere at once.
+    if (church.logo) $$('[data-logo]').forEach(function (el) { el.src = church.logo; });
+    $$('[data-church-name]').forEach(function (el) { el.textContent = church.name || ''; });
+    $$('[data-church-short]').forEach(function (el) { el.textContent = church.shortName || church.name || ''; });
+    $$('[data-church-location]').forEach(function (el) { el.textContent = church.location || ''; });
+    $$('[data-church-tagline]').forEach(function (el) { el.textContent = church.tagline || ''; });
   }
 
   /* ---------------- Navigation ---------------- */
@@ -428,6 +435,24 @@
     initUnavailable();
     initReveal();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+
+  /* All content lives in assets/content.json — the single file the admin at
+     /admin writes to. It is fetched rather than inlined so that saving in the
+     CMS updates the site without touching any code. */
+  function boot() {
+    fetch('assets/content.json', { cache: 'no-cache' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) { SITE = data; })
+      .catch(function (err) {
+        console.error('Could not load assets/content.json —', err.message +
+          '. Serve the site over http (e.g. python3 -m http.server) rather than opening the file directly.');
+      })
+      .then(init);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();

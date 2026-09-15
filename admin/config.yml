@@ -1,0 +1,145 @@
+# ============================================================================
+# Website admin configuration — Dynamite Faith Church International
+#
+# This tells the admin at /admin what the church can edit. Everything here
+# writes to assets/content.json and commits to GitHub, which redeploys the
+# site automatically.
+#
+# IMPORTANT: set `base_url` to the site's real address once it is deployed.
+# ============================================================================
+
+backend:
+  name: github
+  repo: Nanayaw01my/dynamite
+  branch: main
+  # The GitHub login is handled by the two serverless functions in /api.
+  # Replace this with the church's own domain once it is connected.
+  base_url: https://dynamite.vercel.app
+  auth_endpoint: api/auth
+
+# Where uploaded logos and photographs are stored, and the path the site uses.
+media_folder: assets/img/uploads
+public_folder: assets/img/uploads
+
+# Saves go straight to the live site. Change to `editorial_workflow` if you
+# would rather review changes before they are published.
+publish_mode: simple
+
+site_url: https://dynamite.vercel.app
+logo_url: /assets/img/favicon.svg
+
+collections:
+  - name: site
+    label: Website
+    files:
+      # ---------------------------------------------------------------- church
+      - name: church
+        label: Church details
+        file: assets/content.json
+        description: Name, logo, location, phone numbers and everything else on the site.
+        fields:
+          - name: church
+            label: Church details
+            widget: object
+            fields:
+              - { name: name, label: Church name, widget: string }
+              - { name: shortName, label: Short name (shown in the header), widget: string }
+              - { name: tagline, label: Tagline, widget: string }
+              - { name: logo, label: Logo, widget: image, required: false, hint: "Upload the church logo. A square image works best." }
+              - { name: location, label: Location, widget: string }
+              - { name: streetAddress, label: Street address, widget: string, required: false, hint: "Leave empty until there is an exact address." }
+              - name: phones
+                label: Phone numbers
+                widget: list
+                field: { name: number, label: Number, widget: string }
+              - { name: email, label: Email address, widget: string, required: false, hint: "Leave empty to show 'coming soon'." }
+              - { name: mapQuery, label: Map search text, widget: string }
+              - { name: mapEmbed, label: Show the embedded Google map, widget: boolean, default: false, hint: "Turn on once the site is on the church's own domain." }
+              - { name: copyrightYear, label: Copyright year, widget: number, value_type: int }
+
+          # ----------------------------------------------------------- about
+          - name: about
+            label: About our church
+            widget: object
+            fields:
+              - name: who
+                label: Who We Are
+                widget: object
+                fields: &about_fields
+                  - { name: title, label: Heading, widget: string }
+                  - { name: body, label: Text, widget: text }
+                  - { name: placeholder, label: Still placeholder text, widget: boolean, default: true, hint: "Turn off once you have written the church's own words." }
+              - { name: mission, label: Our Mission, widget: object, fields: *about_fields }
+              - { name: vision, label: Our Vision, widget: object, fields: *about_fields }
+              - { name: values, label: Our Values, widget: object, fields: *about_fields }
+
+          # -------------------------------------------------------- services
+          - name: services
+            label: Service times
+            widget: list
+            summary: "{{fields.title}} — {{fields.time}}"
+            fields:
+              - { name: icon, label: Icon, widget: select, options: [sun, book, hands, star, music, globe] }
+              - { name: title, label: Service name, widget: string }
+              - { name: day, label: Day, widget: string, required: false, hint: "For example: Sunday" }
+              - { name: time, label: Time, widget: string, hint: "For example: 9:00 AM" }
+              - { name: description, label: Description, widget: text }
+              - { name: placeholder, label: Time not confirmed yet, widget: boolean, default: true }
+
+          # ------------------------------------------------------ ministries
+          - name: ministries
+            label: Ministries
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { name: icon, label: Icon, widget: select, options: [child, youth, women, men, hands, music, globe, book, star] }
+              - { name: title, label: Ministry name, widget: string }
+              - { name: description, label: Description, widget: text }
+
+          # --------------------------------------------------------- sermons
+          - name: sermons
+            label: Sermons
+            widget: list
+            summary: "{{fields.title}} — {{fields.speaker}}"
+            fields:
+              - { name: title, label: Sermon title, widget: string }
+              - { name: speaker, label: Speaker, widget: string }
+              - { name: date, label: Date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, required: false }
+              - { name: category, label: Category, widget: string, required: false }
+              - { name: image, label: Cover image, widget: image, required: false }
+              - { name: description, label: Description, widget: text }
+              - { name: url, label: Video or audio link, widget: string, required: false, hint: "Paste the YouTube link here and the Watch button will use it." }
+              - { name: placeholder, label: Sample content, widget: boolean, default: true }
+
+          # ---------------------------------------------------------- events
+          - name: events
+            label: Events
+            widget: list
+            summary: "{{fields.title}} — {{fields.date}}"
+            fields:
+              - { name: title, label: Event title, widget: string }
+              - { name: date, label: Date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, required: false }
+              - { name: time, label: Time, widget: string }
+              - { name: location, label: Location, widget: string }
+              - { name: description, label: Description, widget: text }
+              - { name: placeholder, label: Sample content, widget: boolean, default: true }
+
+          # --------------------------------------------------------- gallery
+          - name: gallery
+            label: Photo gallery
+            widget: list
+            summary: "{{fields.caption}}"
+            fields:
+              - { name: src, label: Photograph, widget: image }
+              - { name: alt, label: Description for screen readers, widget: string, hint: "Describe what is in the photo, for visitors who cannot see it." }
+              - { name: caption, label: Caption, widget: string }
+
+          # --------------------------------------------------------- socials
+          - name: socials
+            label: Social media
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: icon, label: Icon, widget: select, options: [facebook, youtube, instagram, tiktok] }
+              - { name: url, label: Link, widget: string, required: false, hint: "Leave empty until the account exists." }
