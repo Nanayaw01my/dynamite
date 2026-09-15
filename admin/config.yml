@@ -13,9 +13,9 @@ backend:
   repo: Nanayaw01my/dynamite
   # Must match the branch Vercel deploys — currently the repository's default.
   branch: claude/dynamite-faith-church-site-m72ppw
-  # The GitHub login is handled by the two serverless functions in /api.
-  # Replace this with the church's own domain once it is connected.
-  base_url: https://dynamite.vercel.app
+  # base_url is filled in automatically with whatever address the admin is
+  # opened from, so moving to a new domain needs no change here. The login
+  # itself is handled by the two serverless functions in /api.
   auth_endpoint: api/auth
 
 # Where uploaded logos and photographs are stored, and the path the site uses.
@@ -26,7 +26,7 @@ public_folder: assets/img/uploads
 # would rather review changes before they are published.
 publish_mode: simple
 
-site_url: https://dynamite.vercel.app
+# site_url is also filled in automatically from the current address.
 logo_url: /assets/img/favicon.svg
 
 collections:

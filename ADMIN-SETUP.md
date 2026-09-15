@@ -47,8 +47,12 @@ This lets the church sign in to the admin using their GitHub account.
    **New OAuth App**.
 2. Fill it in:
    - **Application name**: `Dynamite Faith Church Website Admin`
-   - **Homepage URL**: `https://dynamite.vercel.app` (your address from Step 1)
-   - **Authorization callback URL**: `https://dynamite.vercel.app/api/callback`
+   - **Homepage URL**: `https://your-address` (the address from Step 1)
+   - **Authorization callback URL**: `https://your-address/api/callback`
+
+   The callback URL must match character for character, including `https://`
+   and `/api/callback`. A mismatch here is the most common cause of a login
+   that opens and immediately closes.
 3. Click **Register application**.
 4. Copy the **Client ID**.
 5. Click **Generate a new client secret** and copy it. **GitHub shows the secret
@@ -69,26 +73,16 @@ This lets the church sign in to the admin using their GitHub account.
 > Keep the client secret private. It belongs only in Vercel — never in a
 > message, a document, or the website's own files.
 
-## Step 4 — Point the admin at the live address
+## Step 4 — Log in
 
-Open `admin/config.yml` and set both addresses to the real one from Step 1:
+Visit `https://your-address/admin`, click **Login with GitHub**, and approve.
+The editor opens.
 
-```yaml
-base_url: https://dynamite.vercel.app
-site_url: https://dynamite.vercel.app
-```
-
-Also check that `branch:` matches the branch Vercel deploys. This repository's
-default branch is currently `claude/dynamite-faith-church-site-m72ppw`, and the
-config is already set to it. If the branch is ever renamed to `main`, change it
-here too or saving from the admin will fail.
-
-Save, commit, and push. Vercel redeploys automatically.
-
-## Step 5 — Log in
-
-Visit `https://dynamite.vercel.app/admin`, click **Login with GitHub**, and
-approve. The editor opens.
+There is no address to configure: the admin uses whatever address it was opened
+from. The one thing that must match the deployment is `branch:` in
+`admin/config.yml` — currently `claude/dynamite-faith-church-site-m72ppw`, this
+repository's default branch. If the branch is ever renamed, change it there too
+or saving will fail.
 
 ---
 
@@ -155,10 +149,10 @@ turn on **Church details → Show the embedded Google map**.
 In Vercel: **Settings → Domains → Add**, then enter the domain (for example
 `dynamitefaith.org`) and follow the instructions shown.
 
-Afterwards, update these to the new address or the admin login will stop working:
-
-1. `admin/config.yml` — `base_url` and `site_url`
-2. The GitHub OAuth App from Step 2 — Homepage URL and Authorization callback URL
+Afterwards, update the **GitHub OAuth App** from Step 2 — its Homepage URL and
+Authorization callback URL must point at the new domain, or the login stops
+working. Nothing in the repository needs changing: the admin picks up the new
+address by itself.
 
 ---
 
