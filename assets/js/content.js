@@ -24,6 +24,10 @@ window.SITE = {
     // Add the church email address here when available, e.g. 'info@example.org'
     email: '',
     mapQuery: 'Atebubu, Bono East Region, Ghana',
+    // Set to true once the site is hosted on the church's own domain to show the
+    // embedded Google map. Left false because many previews and sandboxes block
+    // embedded maps, which leaves an empty grey box.
+    mapEmbed: false,
     copyrightYear: 2026
   },
 

@@ -267,9 +267,25 @@
 
     var mapHost = $('#map-embed');
     if (mapHost && church.mapQuery) {
-      mapHost.innerHTML = '<iframe title="Map of ' + esc(church.mapQuery) + '" loading="lazy" ' +
-        'referrerpolicy="no-referrer-when-downgrade" ' +
-        'src="https://www.google.com/maps?q=' + encodeURIComponent(church.mapQuery) + '&output=embed"></iframe>';
+      var q = encodeURIComponent(church.mapQuery);
+      var bar = '<div class="map-frame__bar">' +
+        '<p><strong>' + esc(church.name) + '</strong> &middot; ' + esc(church.location) + '</p>' +
+        '<a class="btn btn--ghost btn--sm" href="https://www.google.com/maps/search/?api=1&query=' + q + '" ' +
+        'target="_blank" rel="noopener">Open in Google Maps</a></div>';
+
+      var view = church.mapEmbed
+        ? '<iframe title="Map of ' + esc(church.mapQuery) + '" loading="lazy" ' +
+          'referrerpolicy="no-referrer-when-downgrade" ' +
+          'src="https://www.google.com/maps?q=' + q + '&output=embed"></iframe>'
+        // Embedded maps are blocked in many previews, so the default is a panel
+        // that always renders and still links out to the real map.
+        : '<div class="map-place">' +
+          '<span class="map-place__pin">' + icon('pin', 26) + '</span>' +
+          '<p class="map-place__town">Atebubu</p>' +
+          '<p class="map-place__region">Bono East Region &middot; Ghana</p>' +
+          '</div>';
+
+      mapHost.innerHTML = view + bar;
     }
 
     $$('[data-year]').forEach(function (el) { el.textContent = church.copyrightYear || new Date().getFullYear(); });

@@ -17,6 +17,18 @@ python3 -m http.server 8000
 
 Then visit <http://localhost:8000>.
 
+## Publishing as a Claude Artifact
+
+`artifact/index.html` is a generated copy of the page for publishing as a shareable
+Artifact (the Artifact host supplies its own `<head>`/`<body>`, so the wrappers are
+stripped). Rebuild it after editing the site:
+
+```bash
+node build-artifact.js
+```
+
+Never edit `artifact/index.html` by hand — it is overwritten on every build.
+
 ## Deploying
 
 Upload the whole folder to any static host (GitHub Pages, Netlify, Vercel, cPanel).
@@ -59,6 +71,11 @@ the card fills in automatically.
 **Add real photos** — drop the image files into `assets/img/` and point the gallery
 `src` values at them, e.g. `src: 'assets/img/worship-2026.jpg'`. Always write a short,
 accurate `alt` description for accessibility.
+
+**Show the embedded map** — the map is a designed location panel by default, because
+embedded Google Maps are blocked in many previews and sandboxes and leave an empty grey
+box. Once the site is on the church's own domain, set `mapEmbed: true` in `church` to show
+the real embedded map. The "Open in Google Maps" link works either way.
 
 **Add the church email** — set `email: 'info@example.org'` in `church`. The footer and
 contact section pick it up automatically.
